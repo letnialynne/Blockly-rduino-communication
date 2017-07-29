@@ -89,17 +89,19 @@ myOptionList = ["", "--verbose-upload",  "--verbose-build",  "--verbose",  "--pr
 myOption = ""
 
 if sys.platform.startswith('win'):
-    separator = "\\"  # Windows
-    myTempDirectory = "rDuinoUploader\\blockly_upload_temp"
+    separator = "/"  # Windows
+    # myTempDirectory = "rDuinoUploader\\blockly_upload_temp"
+    myTempDirectory = "C:/Projects/BE/arduinoFile/blockly_upload_temp"
     myFileName = "blockly_upload_temp.ino"
     myHEXfile = "my_StandardFirmataPlus.ino.standard.hex"
     myArduinoPrecommand = ""
-    myArduinoToolPath = "C:\\Programmation\\Arduino\\"
+    # myArduinoToolPath = "C:\\Programmation\\Arduino\\"
+    myArduinoToolPath = "C:\\Users\\Voytek\\bin\\arduino-1.6.12\\"
     myArduinoUploadExe = "arduino_debug.exe" # Windows
 #    myArduinoUploadExe = "arduino.exe" # Windows
     myArduinoCompileExe = "arduino.exe" # Windows
     myAvrDudeExe = "hardware\\tools\\avr\\bin\\avrdude.exe"
-    myTarget = "COM1"
+    myTarget = "COM7"
 elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
     separator = "/"  # Linux
     myTempDirectory = "/home/nbremond/Arduino/blockly_upload_temp"
