@@ -208,7 +208,7 @@ class RunProcess(Thread):
         global theResult
 
         """Code to be run during the thread."""
-        print("--> ", end="")
+        # print("--> ", end="")
         if not self.computingInProgress:
             print("Running : %s ..." % self.myCmd)
 #            print("Running : %s ..." % ' '.join(self.myCmd))
@@ -223,7 +223,7 @@ class RunProcess(Thread):
             self.computingInProgress  = True
 
         while not self.done:
-            print(".", end="")
+            # print(".", end="")
 
             if myProc is not None:
 
