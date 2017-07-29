@@ -39,7 +39,7 @@ log.setLevel(logging.ERROR) # Only the errors will be displayed, not the HTTP re
 # See http://stackoverflow.com/questions/14888799/disable-console-messages-in-flask-server
 
 
-# from http://flask.pocoo.org/ 
+# from http://flask.pocoo.org/
 from flask import Flask, abort, redirect, url_for, request, render_template,  Markup,  make_response,  session,  escape,  jsonify
 
 # Configuration data
@@ -56,10 +56,10 @@ myInstallBoard = "--install-boards"
 
 # avrdude -U flash:w:[put-hex-file-path-here]:i -C avrdude.conf -v -p atmega328 -b 115200 -c stk500v2 -P [put-device-path-here]
 #
-# C:\dev\Arduino\hardware/tools/avr/bin/avrdude 
-#-CC:\dev\Arduino\hardware/tools/avr/etc/avrdude.conf 
+# C:\dev\Arduino\hardware/tools/avr/bin/avrdude
+#-CC:\dev\Arduino\hardware/tools/avr/etc/avrdude.conf
 #-v -patmega2560 -carduino -b115200 -cstk500v2
-#-P\\.\COM1 
+#-P\\.\COM1
 #-D -Uflash:w:C:\Users\sandy_000\Documents\Arduino\polargraph_firmware\polargraph_server_a1\polargraph_server_a1_adafruit_v1.cpp.hex:i
 
 myAvrdudeOptions_file = " -c stk500v2 -D -Uflash:w:"
@@ -99,33 +99,33 @@ if sys.platform.startswith('win'):
 #    myArduinoUploadExe = "arduino.exe" # Windows
     myArduinoCompileExe = "arduino.exe" # Windows
     myAvrDudeExe = "hardware\\tools\\avr\\bin\\avrdude.exe"
-    myTarget = "COM1"    
+    myTarget = "COM1"
 elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
     separator = "/"  # Linux
     myTempDirectory = "/home/nbremond/Arduino/blockly_upload_temp"
 #    myTempDirectory = "/tmp/Arduino/blockly_upload_temp"
-    myFileName = "blockly_upload_temp.ino"    
+    myFileName = "blockly_upload_temp.ino"
     myHEXfile = "my_StandardFirmataPlus.ino.standard.hex"
     myArduinoPrecommand = "export DISPLAY=:0.0 && "
     myArduinoToolPath = "/home/nbremond/Tools/Arduino/arduino-nightly/"
     myArduinoUploadExe = "arduino " # Linux
     myArduinoCompileExe = "arduino " # Linux
     myAvrDudeExe = "export DISPLAY=:0.0 && avrdude" # Linux
-    myTarget = "/dev/ttyUSB0"    
+    myTarget = "/dev/ttyUSB0"
 elif sys.platform.startswith('darwin'):
     separator = "/"  # Mac - Not tested
     myTempDirectory = "Arduino/blockly_upload_temp"
-    myFileName = "blockly_upload_temp.ino"    
+    myFileName = "blockly_upload_temp.ino"
     myHEXfile = "my_StandardFirmataPlus.ino.standard.hex"
     myArduinoPrecommand = ""
     myArduinoToolPath = "Arduino.app/Contents/MacOS"
     myArduinoUploadExe = "Arduino" # MAC - not tested
     myArduinoCompileExe = "Arduino" # MAC - not tested
     myAvrDudeExe = "avrdude" # MAC - not tested
-    myTarget = "/dev/ttyUSB0"    
+    myTarget = "/dev/ttyUSB0"
 else:
     raise EnvironmentError('Unsupported platform')
-    
+
 
 myCmd = ""
 theResult = ""
@@ -135,7 +135,7 @@ compileTime = datetime.datetime.now()
 
 myProc = None
 
-    
+
 # Define the main application
 app = Flask(__name__)
 
@@ -175,12 +175,12 @@ def serial_ports():
             pass
     print("List of detected USB devices:%s" % result)
     return result
-    
+
 
 #targetList = ["COM1","COM2","COM3","COM4","COM5","COM6"]
 #targetList = ["/dev/ttyUSB0", "/dev/ttyUSB1", "/dev/ttyUSB2", "/dev/ttyUSB3", "/dev/ttyACM0", "/dev/ttyACM1", "/dev/ttyACM2", "/dev/ttyACM3"]
 targetList = [""] + serial_ports()
- 
+
 
 
 class RunProcess(Thread):
@@ -191,22 +191,22 @@ class RunProcess(Thread):
         global theError
 
         Thread.__init__(self)
-        
+
         print("Opening thread...")
         self.computingInProgress = False
         self.done = False
-        
+
         self.myCmd = cmd
         theResult = result
-        theError  = error         
-        theReturnCode = "In progress..." # In progress mode"  
+        theError  = error
+        theReturnCode = "In progress..." # In progress mode"
 
     def run(self):
         global myProc
         global theReturnCode
         global theError
         global theResult
-        
+
         """Code to be run during the thread."""
         print("--> ", end="")
         if not self.computingInProgress:
@@ -220,8 +220,8 @@ class RunProcess(Thread):
                 myProc = subprocess.Popen(self.myCmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1, shell=True) # NOT TESTED
             else:
                 raise EnvironmentError('Unsupported platform')
-            self.computingInProgress  = True  
-            
+            self.computingInProgress  = True
+
         while not self.done:
             print(".", end="")
 
@@ -231,13 +231,13 @@ class RunProcess(Thread):
                     result = line.decode('utf-8', errors='ignore')
                     theResult = theResult + result.replace("\n","<br/>")
                     print("%s" % result)
-                 
+
                 #theTime = datetime.datetime.now()
                 for line in myProc.stderr:
                     error = line.decode('utf-8', errors='ignore')
                     theError = theError + error.replace("\n","<br/>")
                     print("%s" % error)
-            
+
             status = myProc.poll()
             if status is not None: # End of subprocess
                 if (theError.find("can't open") >= 0):
@@ -249,15 +249,15 @@ class RunProcess(Thread):
                 else:
                     theReturnCode = myProc.returncode # Good or error returned code
                 print("Return code:[%s]\n" % theReturnCode)
-             
+
                 myProc = None
                 self.done = True
                 print("Done")
 
-        
+
 #global app
 # Define the routes
-    
+
 # Main page, and process code compile and upload requests
 @app.route('/', methods=['GET', 'POST'])
 def main_page():
@@ -272,11 +272,11 @@ def main_page():
 
     #print(" Call main page.\n")
     targetList = [""] + serial_ports() # Update the list of serial ports, in case a board has been connected
-    #print("Updated list of serial ports : %s \n   --> myTarget : %s" % (targetList, myTarget))     
-    
+    #print("Updated list of serial ports : %s \n   --> myTarget : %s" % (targetList, myTarget))
+
     return render_template('main.html', result=theResult, error=theError)
 
-    
+
 # Program an HEX file using Avrdude
 @app.route('/upload_hex', methods=['GET', 'POST'])
 def upload_hex():
@@ -290,10 +290,10 @@ def upload_hex():
 
     theResult = ""
     theError = ""
-    theReturnCode = "Waiting for command..." # In waiting mode"     
+    theReturnCode = "Waiting for command..." # In waiting mode"
 
     if request.method == 'POST':
-    
+
         myHEXfile = request.form['filename']
         myTarget = request.form['target']
 
@@ -305,15 +305,15 @@ def upload_hex():
 #        myCmd.append( myAvrdudeOptions_target+myTarget+myAvrdudeOptions_target_end)
 
         myCmd = [myArduinoToolPath+myAvrDudeExe+" "+myAvrdudeOptions_file+myHEXfilePath+separator+myHEXfile+myAvrdudeOptions_file_end+" "+myAvrdudeOptions_configfile+myArduinoToolPath+myAvrdudeConfigFile+myAvrdudeOptions_configfile_end+" "+myAvrdudeOptions_board+myAvrdudeBoard+myAvrdudeOptions_board_end+" "+myAvrdudeOptions_target+myTarget+myAvrdudeOptions_target_end]
-        
+
         # Creation of the thread
         thread_1 = RunProcess(myCmd)
         # Launch of the thread
         thread_1.start()
         print("\nProcess called in a separate thread..." )
-        
+
     targetList = [""] + serial_ports() # Update the list of serial ports, in case a board has been connected
-    
+
     # Get list of files in the "upload" folder
     #from os import walk
     myHEXfileList = []
@@ -322,7 +322,7 @@ def upload_hex():
         break
     print("myHEXfileList: %s" % myHEXfileList)
     return render_template('program_hex_file.html', cmd=myCmd, result=theResult, error=theError,  theTargetList=targetList, theTarget=myTarget, theFileList=myHEXfileList, theFile=myHEXfile)
-    
+
 
 # Install a new library in the Arduino IDE
 @app.route('/run_websocket', methods=['GET', 'POST'])
@@ -334,25 +334,25 @@ def run_websocket():
 
     theResult = ""
     theError = ""
-    theReturnCode = "Waiting for command..." # In waiting mode"     
-    
+    theReturnCode = "Waiting for command..." # In waiting mode"
+
 #    if request.method == 'POST':
-    
+
 #        theLibrary = request.form['library']
-        
+
         # arduino --install-library "Bridge:1.0.0"
         #myCmd = myArduinoToolPath + myArduinoUploadExe +" "+myInstallLibrary+" "+theLibrary
 #        myCmd = [myArduinoToolPath+myArduinoUploadExe, myInstallLibrary, theLibrary]
-        
+
         # Creation of the thread
 #        thread_1 = RunProcess(myCmd)
         # Launch of the thread
 #        thread_1.start()
 #        print("\nProcess called in a separate thread..." )
-        
-    return render_template('run_websocket.html', cmd=myCmd, result=theResult, error=theError)    
-    
-    
+
+    return render_template('run_websocket.html', cmd=myCmd, result=theResult, error=theError)
+
+
 # Install a new library in the Arduino IDE
 @app.route('/install_library', methods=['GET', 'POST'])
 def install_library():
@@ -363,22 +363,22 @@ def install_library():
 
     theResult = ""
     theError = ""
-    theReturnCode = "Waiting for command..." # In waiting mode"     
-    
+    theReturnCode = "Waiting for command..." # In waiting mode"
+
     if request.method == 'POST':
-    
+
         theLibrary = request.form['library']
-        
+
         # arduino --install-library "Bridge:1.0.0"
         myCmd = myArduinoPrecommand+myArduinoToolPath + myArduinoUploadExe +" "+myInstallLibrary+" "+theLibrary
 #        myCmd = [myArduinoPrecommand+myArduinoToolPath+myArduinoUploadExe, myInstallLibrary, theLibrary]
-        
+
         # Creation of the thread
         thread_1 = RunProcess(myCmd)
         # Launch of the thread
         thread_1.start()
         print("\nProcess called in a separate thread..." )
-        
+
     return render_template('install_library.html', cmd=myCmd, result=theResult, error=theError)
 
 
@@ -392,10 +392,10 @@ def install_board():
 
     theResult = ""
     theError = ""
-    theReturnCode = "Waiting for command..." # In waiting mode"     
-    
+    theReturnCode = "Waiting for command..." # In waiting mode"
+
     if request.method == 'POST':
-    
+
         theBoard = request.form['board']
         # arduino --install-boards "arduino:sam"
         myCmd = myArduinoPrecommand+myArduinoToolPath + myArduinoUploadExe + " "+myInstallBoard+" "+theBoard
@@ -406,7 +406,7 @@ def install_board():
         # Launch of the thread
         thread_1.start()
         print("\nProcess called in a separate thread..." )
-        
+
     return render_template('install_board.html',  theBoardList=boardList, theBoard=myBoard, cmd=myCmd, result=theResult, error=theError)
 
 # Define the target address
@@ -422,9 +422,9 @@ def set_target():
         print("Taget set to:[%s]\n" % (myTarget))
         theResult = ""
         theError = ""
-        theReturnCode = "Waiting for command..." # In waiting mode"        
+        theReturnCode = "Waiting for command..." # In waiting mode"
     return redirect('/')
-    
+
 # Define the board
 @app.route('/set_board', methods=['GET', 'POST'])
 def set_board():
@@ -438,9 +438,9 @@ def set_board():
         print("Board set to:[%s]\n" % myBoard)
         theResult = ""
         theError = ""
-        theReturnCode = "Waiting for command..." # In waiting mode"        
+        theReturnCode = "Waiting for command..." # In waiting mode"
     return redirect('/')
-    
+
 # Define the board
 @app.route('/set_option', methods=['GET', 'POST'])
 def set_option():
@@ -454,7 +454,7 @@ def set_option():
         print("Option set to:[%s]\n" % myOption)
         theResult = ""
         theError = ""
-        theReturnCode = "Waiting for command..." # In waiting mode"        
+        theReturnCode = "Waiting for command..." # In waiting mode"
     return redirect('/')
 
 # Define temp directory
@@ -470,7 +470,7 @@ def set_set_temp_directory():
         print("Temp. directory set to:[%s]\n" % myTempDirectory)
         theResult = ""
         theError = ""
-        theReturnCode = "Waiting for command..." # In waiting mode"        
+        theReturnCode = "Waiting for command..." # In waiting mode"
     return redirect('/')
 
 # Define arduino EXE to launch
@@ -490,7 +490,7 @@ def set_set_arduino_exe():
         print("Arduino Compile EXE set to:[%s]\n" % myArduinoCompileExe)
         theResult = ""
         theError = ""
-        theReturnCode = "Waiting for command..." # In waiting mode"        
+        theReturnCode = "Waiting for command..." # In waiting mode"
     return redirect('/')
 
 
@@ -508,14 +508,14 @@ def openIDE():
 
     theResult = ""
     theError = ""
-    theReturnCode = "Waiting for command..." # In waiting mode"     
-    
+    theReturnCode = "Waiting for command..." # In waiting mode"
+
     if request.method == 'POST':
-        
+
         tmp = request.data
 #        theCode = tmp.decode(encoding='UTF-8', errors='ignore')
         theCode = tmp.decode(encoding='UTF-8', errors='ignore') + "\n"
-        
+
         theFileName = myTempDirectory + separator + myFileName
         print("The code:\n%s\n" % theCode)
         print("Try to save the code to a local file %s\n" % theFileName)
@@ -544,18 +544,18 @@ def openIDE():
         compileTime = datetime.datetime.now()
         myCmd = myArduinoPrecommand+myArduinoToolPath + myArduinoCompileExe +" "+myTempDirectory+separator+myFileName
 #        myCmd = [myArduinoPrecommand+myArduinoToolPath+myArduinoCompileExe, myTempDirectory+separator+myFileName]
-            
+
         # Creation of the thread
         thread_1 = RunProcess(myCmd)
         # Launch of the thread
         thread_1.start()
         print("\nProcess called in a separate thread..." )
 
-        
+
     return render_template('main.html', thePort=myPort, theBoardList=boardList, theBoard=myBoard, theTargetList=targetList, theTarget=myTarget, theOptionList=myOptionList, theOption=myOption, theTempFile=myTempDirectory+separator+myFileName, result=theResult, error=theError)
 
 
-    
+
 # Main page, and process code compile and upload requests
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
@@ -570,13 +570,13 @@ def upload():
 
     theResult = ""
     theError = ""
-    theReturnCode = "Waiting for command..." # In waiting mode"     
-    
+    theReturnCode = "Waiting for command..." # In waiting mode"
+
     if request.method == 'POST':
-        
+
 #        print("Type de request.data : %s" % type(request.data))
         tmp = request.data
-        
+
 #        theCode = tmp.decode(encoding='UTF-8', errors='ignore')
         theCode = tmp.decode(encoding='UTF-8', errors='ignore') + "\n"
 #        print("Type detheCode : %s" % type(theCode))
@@ -631,7 +631,7 @@ def upload():
         print("\nProcess called in a separate thread..." )
 
     targetList = [""] + serial_ports()
-#    print("targetList : %s \n   --> myTarget : %s" % (targetList, myTarget))    
+#    print("targetList : %s \n   --> myTarget : %s" % (targetList, myTarget))
     return render_template('main.html', thePort=myPort, theBoardList=boardList, theBoard=myBoard, theTargetList=targetList, theTarget=myTarget, theOptionList=myOptionList, theOption=myOption, theTempFile=myTempDirectory+separator+myFileName, result=theResult, error=theError)
 
 
@@ -650,15 +650,15 @@ def compile():
 
     theResult = ""
     theError = ""
-    theReturnCode = "Waiting for command..." # In waiting mode"     
-    
+    theReturnCode = "Waiting for command..." # In waiting mode"
+
     if request.method == 'POST':
 
         tmp = request.data
-        
+
 #        theCode = tmp.decode(encoding='UTF-8', errors='ignore')
         theCode = tmp.decode(encoding='UTF-8', errors='ignore') + "\n"
-        
+
         theFileName = myTempDirectory + separator + myFileName
         print("The code:\n%s\n" % theCode)
         print("Try to save the code to a local file %s" % theFileName)
@@ -693,19 +693,19 @@ def compile():
         else:
             #myCmd = [myArduinoPrecommand+myArduinoToolPath+myArduinoUploadExe, myBoardOptions, myBoard, myOption, myCompileOption, myTempDirectory+separator+myFileName]
             myCmd = myArduinoPrecommand+myArduinoToolPath+myArduinoUploadExe + " " + myBoardOptions + " " + myBoard + " " + myOption + " " + myCompileOption + " " + myTempDirectory+separator+myFileName
-        
+
         # Creation of the thread
         thread_1 = RunProcess(myCmd)
         # Launch of the thread
         thread_1.start()
         print("\nProcess called in a separate thread..." )
-   
+
     targetList = [""] + serial_ports()
-#    print("targetList : %s \n   --> myTarget : %s" % (targetList, myTarget))    
+#    print("targetList : %s \n   --> myTarget : %s" % (targetList, myTarget))
     return render_template('main.html', thePort=myPort, theBoardList=boardList, theBoard=myBoard, theTargetList=targetList, theTarget=myTarget, theOptionList=myOptionList, theOption=myOption, theTempFile=myTempDirectory+separator+myFileName, result=theResult, error=theError)
 
 
-    
+
 @app.route('/get_result')
 def get_result():
     global theResult
@@ -719,18 +719,18 @@ def get_result():
 
 
 
-    
-def flaskrun(default_host="127.0.0.1", 
+
+def flaskrun(default_host="127.0.0.1",
                   default_port=myPort):
     """
-    Takes a flask.Flask instance and runs it. Parses 
+    Takes a flask.Flask instance and runs it. Parses
     command-line flags to configure the app.
     """
     global myTarget
     global targetList
     global myBoard
     global boardList
-    global myOption    
+    global myOption
     global myOptionList
     global myArduinoToolPath
     global myArduinoUploadExe
@@ -780,7 +780,7 @@ def flaskrun(default_host="127.0.0.1",
     #                       "[default : %s]" % debugMode,
     #                  default=debugMode)
 
-    # Two options useful for debugging purposes, but 
+    # Two options useful for debugging purposes, but
     # a bit dangerous so not exposed in the help message.
     parser.add_option("-d", "--debug",
                       action="store_true", dest="debug",
@@ -790,7 +790,7 @@ def flaskrun(default_host="127.0.0.1",
                       help=optparse.SUPPRESS_HELP)
 
     options, _ = parser.parse_args()
-    
+
     #print("%s" % options)
     myTarget = options.device
     myBoard = options.board
@@ -826,22 +826,22 @@ def flaskrun(default_host="127.0.0.1",
     print("\n")
 
     #app.config['DEBUG'] = True
-    
+
     app.run(
         debug=options.debug,
         host=options.host,
         port=int(options.port)
     )
     # Start the main server
-    #app.run(port=myPort)    
+    #app.run(port=myPort)
 
 if __name__ == '__main__':
     #global app
-    
+
     # Create the temp file directory if needed
     if not(os.path.isdir(myTempDirectory)):
         os.system("mkdir "+myTempDirectory)
-    
+
     # Start the main server
     flaskrun()
 
