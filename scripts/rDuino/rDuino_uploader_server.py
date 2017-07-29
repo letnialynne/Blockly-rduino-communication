@@ -667,7 +667,8 @@ def compile():
 
         # Write the code to a temp file
         try:
-            f = open(theFileName, "w", encoding='utf-8', errors='ignore')
+            # f = open(theFileName, "w", encoding='utf-8', errors='ignore')
+            f = open(theFileName, "w")
 #            print("Trying...")
 #        except (OSError, IOError) as err:
         except:
