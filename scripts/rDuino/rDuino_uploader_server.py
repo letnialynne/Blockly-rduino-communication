@@ -613,15 +613,13 @@ def upload():
 
         # arduino --board arduino:avr:nano:cpu=atmega168 --port /dev/ttyACM0 --upload /path/to/sketch/sketch.ino
         compileTime = datetime.datetime.now()
-#        myCmd = myArduinoToolPath + myArduinoUploadExe +" "+myBoardOptions+" "+myBoard+" "+myTargetOption+" "+myTarget+" "+myOption+" "+myCompileAndUploadOption+" "+myTempDirectory+separator+myFileName
         if myOption == "":
-            #myCmd = [myArduinoPrecommand+myArduinoToolPath+myArduinoUploadExe, myBoardOptions, myBoard, myTargetOption, myTarget, myCompileAndUploadOption, myTempDirectory+separator+myFileName]
+            # myCmd = myArduinoPrecommand+myArduinoToolPath+myArduinoUploadExe + " " + myBoardOptions + " " +  myBoard + " " +  myTargetOption + " " +  myTarget + " " +  myCompileAndUploadOption + " " +  myTempDirectory+separator+myFileName
 
-            myCmd = myArduinoPrecommand+myArduinoToolPath+myArduinoUploadExe + " " + myBoardOptions + " " +  myBoard + " " +  myTargetOption + " " +  myTarget + " " +  myCompileAndUploadOption + " " +  myTempDirectory+separator+myFileName
+            # Without specifying com port.
+            myCmd = myArduinoPrecommand+myArduinoToolPath+myArduinoUploadExe + " " + myBoardOptions + " " +  myBoard + " " +  myCompileAndUploadOption + " " +  myTempDirectory+separator+myFileName
 
         else:
-            #myCmd = [myArduinoPrecommand+myArduinoToolPath+myArduinoUploadExe, myBoardOptions, myBoard, myTargetOption, myTarget, myOption, myCompileAndUploadOption, myTempDirectory+separator+myFileName]
-
             myCmd = myArduinoPrecommand+myArduinoToolPath+myArduinoUploadExe + " " + myBoardOptions + " " +  myBoard + " " +  myTargetOption + " " +  myTarget + " " +  myOption + " " +  myCompileAndUploadOption + " " +  myTempDirectory+separator+myFileName
 
         # Clean the result:
