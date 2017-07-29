@@ -520,9 +520,12 @@ def openIDE():
         print("The code:\n%s\n" % theCode)
         print("Try to save the code to a local file %s\n" % theFileName)
 
+        print("Will save to: ", theFileName)
+
         # Write the code to a temp file
         try:
-            f = open(theFileName, "w", encoding='utf-8', errors='ignore')
+            # f = open(theFileName, "w", encoding="utf-8", errors="ignore")
+            f = open(theFileName, 'w')
             print("Trying...\n")
 #        except (OSError, IOError) as err:
         except:
@@ -587,7 +590,8 @@ def upload():
 
         # Write the code to a temp file
         try:
-            f = open(theFileName, "w", encoding='utf-8', errors='ignore')
+            # f = open(theFileName, "w", encoding='utf-8', errors='ignore')
+            f = open(theFileName, "w")
 #            print("Trying...\n")
 #        except (OSError, IOError) as err:
         except:
